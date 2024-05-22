@@ -1,3 +1,4 @@
+from datetime import datetime
 import serial
 import csv
 import time
@@ -14,7 +15,7 @@ time.sleep(1)
 user_number_of_measurements = int(input("Insert the number of measurements you want to collect --> MAX 100 samples: \n\r"))
 # Check the user input
 user_number_of_measurements = user_number_of_measurements if ( user_number_of_measurements < MAX_NUMBER_OF_MEASURES and user_number_of_measurements > 0) else MAX_NUMBER_OF_MEASURES
-user_time_interval = int(input("Insert the time inverval from each measurement (in seconds) -- Min = 0 | Max = 10 -- : \n\r"))
+user_time_interval = int(input("Insert the time interval from each measurement (in seconds) -- Min = 0 | Max = 10 -- : \n\r"))
 # Check the user input
 user_time_interval = user_time_interval if ( user_time_interval < MAX_TIME_INTERVAL) else MAX_TIME_INTERVAL
 
@@ -31,7 +32,9 @@ with open('data_exportation.csv', 'w', newline='') as csv_file:
         #Check. If there is an error, ignore the colected value
         if(data_buffer.decode('utf-8') != ''):
             print(data_buffer.decode('utf-8'))
-            csvwriter.writerow([int(data_buffer)])
+            time_stamp = datetime.now()
+            data_buffer = "ADC Value: " + str(data_buffer.decode('utf-8')) + " | Time: " + time_stamp.strftime('%H:%M:%S')
+            csvwriter.writerow([data_buffer])
             user_number_of_measurements -= 1
 
         #interval time according to user input
